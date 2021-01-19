@@ -959,8 +959,7 @@ class Api extends CI_Controller {
         }
 
         try{
-            $ret_ins = $this->db->insert( 'zform_'.$form_id, $final_array );
-            
+            $ret_ins = $this->db->insert('zform_'.$form_id, $final_array);
             if(!$ret_ins){
                 $err_msg .= $this->db->_error_message();
                 $this->form_results_model->update_mobile_activity($activity_inserted_id,array('error'=>$err_msg));
@@ -980,9 +979,9 @@ class Api extends CI_Controller {
               
         
         if (!empty($sub_table_record)) {
-            foreach ($sub_table_record as $sb_key => $sb_value) {
+            foreach ($sub_table_record as $sb_key => $sub_value) {
                 $subtable_name = 'zform_' . $form_id . '_' . $sb_key;
-                foreach ($sb_value as $sub_array) {
+                foreach ($sub_value as $sub_array) {
                     $sub_comon_fields = array();
                     foreach ($sub_array as $fild_key => $filds) {
                         $sub_fild_ary = array(
@@ -1029,7 +1028,7 @@ class Api extends CI_Controller {
         $post_url = '';
         if (!empty($form_info ['post_url'])) {
             $post_url = $form_info ['post_url'];
-        } else if (!empty($form_info ['fv_post_url'])) {
+        } elseif (!empty($form_info ['fv_post_url'])) {
             $post_url = $form_info ['fv_post_url'];
         }
 
