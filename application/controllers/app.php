@@ -152,12 +152,12 @@ class App extends CI_Controller {
                     //$forms_list[] = array('form_id' => $forms['form_id'], 'form_name' => $forms['form_name']);
                     //$table_exist_bit = $this->form_results_model->check_table_exits('zform_' . $forms['form_id']);
                     //if($table_exist_bit['count(*)']==1){
-                    if(is_table_exist('zform_' . $forms['form_id'])){
+                    if (is_table_exist('zform_' . $forms['form_id'])) {
                         //get count of records...
                         $total=$this->form_results_model->find_record_count('zform_' . $forms['form_id']);
                         $results_count+=$total;
                     }
-                    if(!is_table_exist('zform_' . $forms['form_id'])) {
+                    if (!is_table_exist('zform_' . $forms['form_id'])) {
                         updateDataBase($forms['form_id'], $forms['description']);
                     }
                 }
@@ -297,7 +297,11 @@ class App extends CI_Controller {
      */
     public function appusers() {
         if (!$this->acl->hasPermission('app_users', 'view')) {
-            $this->session->set_flashdata('validate', array('message' => "You don't have enough permissions to do this task.", 'type' => 'warning'));
+            $this->session->set_flashdata('validate', 
+            array(
+                'message' => "You don't have enough permissions to do this task.", 
+                'type' => 'warning')
+            );
             redirect('/');
         }
         $this->load->library('form_validation');
@@ -319,8 +323,7 @@ class App extends CI_Controller {
             $this->form_validation->set_rules('app_id', 'App Id', 'trim|required|xss_clean');
             $this->form_validation->set_rules('name', 'First Name', 'trim|required|min_length[1]|xss_clean');
             $this->form_validation->set_rules('town', 'district', 'Last Name', 'trim|required|min_length[1]|xss_clean');
-            if($this->input->post('login_user') == '')
-            {
+            if ($this->input->post('login_user') == '') {
                 $this->form_validation->set_rules('imei_no', 'IMEI #', 'trim|required|callback_appuser_imei_already_exist[' . $app_id . ']');
             }
             else{
@@ -338,8 +341,7 @@ class App extends CI_Controller {
                 $view_id = $this->input->post('view_id');
 
                 $imei_no = $this->input->post('imei_no');
-                if($this->input->post('imei_no')=='')
-                {
+                if ($this->input->post('imei_no')=='') {
                     $imei_no = $this->input->post('login_user');
                 }
 
@@ -374,7 +376,7 @@ class App extends CI_Controller {
         }
         if ($this->acl->hasSuperAdmin()) {
             $app_user_list = $this->app_users_model->get_app_user_listing($data['login_department_id']);
-        }else{
+        } else {
             $app_user_list = $this->app_users_model->get_app_user_listing($data['login_department_id'],null,null,null,null,null,$app_list);
         }
         $data['app_user_list'] = $app_user_list;
@@ -444,7 +446,7 @@ class App extends CI_Controller {
 
         }
 
-        if($total_apps_users==0){
+        if ($total_apps_users==0) {
             //echo json_encode(array('aaData'=>''));
             echo json_encode(array(                
                     //"sEcho" => 0,                
@@ -452,7 +454,7 @@ class App extends CI_Controller {
                     "iTotalDisplayRecords" => "0",                
                     "aaData" => array()            
                     ));
-        }else {
+        } else {
             echo json_encode($data2);
         }
 
@@ -540,14 +542,12 @@ class App extends CI_Controller {
                             $this->load->view('templates/footer', $data);
                         }
 
-                    }
-                    else{
+                    } else {
                         $this->session->set_flashdata('validate', array('message' => "Select CSV file", 'type' => 'warning'));
                         redirect(base_url() . 'applicatioin-users');
                     }
                 }
-            }
-            else{
+            } else {
                 redirect(base_url() . 'applicatioin-users');
             }
 
@@ -591,10 +591,10 @@ class App extends CI_Controller {
     		$myimeidata = $query->result_array();
     		$already_exist = array();
     		foreach ($myimeidata as $key => $myimei) {
-                        if(!empty($myimei['imei_no'])){
+                        if (!empty($myimei['imei_no'])) {
                             $already_exist[] = $myimei['imei_no'];
                         }
-                        else if(!empty($myimei['login_user'])) {
+                        elseif (!empty($myimei['login_user'])) {
                             $already_exist[] = $myimei['login_user'];
                         }
     		}
@@ -606,11 +606,11 @@ class App extends CI_Controller {
     					$row++;
     				} else {
                                         
-                        if(!empty($data[$imei_no_index])){
+                        if (!empty($data[$imei_no_index])) {
                             $unique_identifi = $data[$imei_no_index];
                             $query = $this->db->query("SELECT * FROM app_users WHERE is_deleted=0 AND app_id = '$app_id' AND imei_no='$unique_identifi'");
                         }
-                        elseif(!empty($data[$login_user_index])){
+                        elseif (!empty($data[$login_user_index])) {
                             $unique_identifi = $data[$login_user_index];
                             $query = $this->db->query("SELECT * FROM app_users WHERE is_deleted=0 AND app_id = '$app_id' AND login_user='$unique_identifi'");
                         }
@@ -1176,11 +1176,11 @@ class App extends CI_Controller {
                         }
                 }
                 $is_secure = $this->input->post('is_secure');
-                if ($this->input->post('is_authorized'))
+                if ($this->input->post('is_authorized')){
                     $is_authorized = '1';
-                else
+                } else {
                     $is_authorized = '0';
-
+                }
                 $change_icon = array(
                     'name' => $appName,
                     'icon' => $iconName,
@@ -1690,47 +1690,47 @@ class App extends CI_Controller {
                 $high_resolution_image = 'YES';
             }
             $persist_images_on_device = 'YES';//If image delete after activity
-            if(isset($app_general_setting->persist_images_on_device) && $app_general_setting->persist_images_on_device == 1){
+            if (isset($app_general_setting->persist_images_on_device) && $app_general_setting->persist_images_on_device == 1) {
                 $persist_images_on_device = 'NO';//if image not delete after activity
             }
             
             
             $background_update = 'YES';//If image delete after activity
-            if(isset($app_general_setting->background_update) && $app_general_setting->background_update == 0){
+            if (isset($app_general_setting->background_update) && $app_general_setting->background_update == 0) {
                 $background_update = 'NO';//if image not delete after activity
             }
             $force_update = 'YES';//If image delete after activity
-            if(isset($app_general_setting->force_update) && $app_general_setting->force_update == 0){
+            if (isset($app_general_setting->force_update) && $app_general_setting->force_update == 0) {
                 $force_update = 'NO';//if image not delete after activity
             }
             $enable_auto_time = 'YES';
-            if(isset($app_general_setting->enable_auto_time) && $app_general_setting->enable_auto_time == 0){
+            if (isset($app_general_setting->enable_auto_time) && $app_general_setting->enable_auto_time == 0) {
                 $enable_auto_time = 'NO';
             }
            
             
             $tracking_status = 'YES';
-            if(isset($app_general_setting->tracking_status) && $app_general_setting->tracking_status == 0){
+            if (isset($app_general_setting->tracking_status) && $app_general_setting->tracking_status == 0) {
                 $tracking_status = 'NO';
             }
             $tracking_interval = 5;
-            if(isset($app_general_setting->tracking_interval)){
+            if (isset($app_general_setting->tracking_interval)) {
                 $tracking_interval = $app_general_setting->tracking_interval;
             }
             $tracking_distance = 100;
-            if(isset($app_general_setting->tracking_distance)){
+            if (isset($app_general_setting->tracking_distance)) {
                 $tracking_distance = $app_general_setting->tracking_distance;
             }
              $debug_tracking = 'NO';
-            if(isset($app_general_setting->debug_tracking) && $app_general_setting->debug_tracking == 1){
+            if (isset($app_general_setting->debug_tracking) && $app_general_setting->debug_tracking == 1) {
                 $debug_tracking = 'YES';
             }
             $has_geo_fencing = 'NO';
-            if(isset($app_general_setting->has_geo_fencing) && $app_general_setting->has_geo_fencing == 1){
+            if (isset($app_general_setting->has_geo_fencing) && $app_general_setting->has_geo_fencing == 1) {
                 $has_geo_fencing = 'YES';
             }
             $debug_geo_fencing = 'NO';
-            if(isset($app_general_setting->debug_geo_fencing) && $app_general_setting->debug_geo_fencing == 1){
+            if (isset($app_general_setting->debug_geo_fencing) && $app_general_setting->debug_geo_fencing == 1) {
                 $debug_geo_fencing = 'YES';
             }
             
@@ -1946,19 +1946,16 @@ class App extends CI_Controller {
         {
             $form_submit_url = "http://175.107.16.188:8081/fbrltu/Api/saverecords";
         }
-        else if($parray['app_id'] == '13696')
-        {
+        elseif ($parray['app_id'] == '13696') {
             $form_submit_url = "http://175.107.16.188:8081/dev/Api/saverecords";
         }
-        else if($parray['app_id'] == '13739')
-        {
+        elseif ($parray['app_id'] == '13739') {
             $form_submit_url = "http://202.142.188.174/fbrltu/Api/saverecords";
         }
-        else if($parray['app_id'] == '13747')
+        elseif($parray['app_id'] == '13747')
         {
             $form_submit_url = "http://58.65.205.180/fbrltu/Api/saverecords";
-        }
-        else{
+        } else {
             $form_submit_url = $base_url . "api/saverecords";
         }
         
@@ -2180,7 +2177,7 @@ class App extends CI_Controller {
 
             $exclude_array = array('id', 'form_id','location_source','activity_datetime','created_datetime');
             $possible_filters_array=array_diff($all_columns,$exclude_array);
-            if($i==1) {
+            if ($i==1) {
                 $first_form_columns = $possible_filters_array;
             }
             $possible_and_defaults[$val['id']]['possible_filter_selected']=$possible_filter_selected;
@@ -2190,40 +2187,40 @@ class App extends CI_Controller {
             $i++;
         }
 
-        if(!empty($settings_exist)){
+        if (!empty($settings_exist)) {
             $settings_exist_new=array();
-            foreach($settings_exist as $key=>$val){
+            foreach ($settings_exist as $key=>$val) {
                 $settings_exist_new[$val['setting_type']]=$val;
             }
 
             $result1=array_key_exists("GENERAL_SETTINGS",$settings_exist_new);
-            if($result1!=''){
+            if ($result1!='') {
                 $general_settings_filter=$settings_exist_new['GENERAL_SETTINGS']['filters'];
             }
             $result2=array_key_exists("FORM_SETTINGS",$settings_exist_new);
-            if($result2!=''){
+            if ($result2!='') {
                 $form_settings_filter=$settings_exist_new['FORM_SETTINGS']['filters'];
             }
             $result3=array_key_exists("RESULT_VIEW_SETTINGS",$settings_exist_new);
-            if($result3!=''){
+            if ($result3!='') {
                 $result_view_settings_filter=$settings_exist_new['RESULT_VIEW_SETTINGS']['filters'];
             }
             $result4=array_key_exists("MAP_VIEW_SETTINGS",$settings_exist_new);
-            if($result4!=''){
+            if ($result4!='') {
                 $map_view_settings_filter=$settings_exist_new['MAP_VIEW_SETTINGS']['filters'];
             }
             $result5=array_key_exists("GRAPH_VIEW_SETTINGS",$settings_exist_new);
-            if($result5!=''){
+            if ($result5!='') {
                 $graph_view_settings_filter=$settings_exist_new['GRAPH_VIEW_SETTINGS']['filters'];
             }
             $result6=array_key_exists("SMS_SETTINGS",$settings_exist_new);
-            if($result6!=''){
+            if ($result6!='') {
                 $sms_settings_filter=$settings_exist_new['SMS_SETTINGS']['filters'];
             }
 
         }
 
-        if(!empty($_POST)){
+        if (!empty($_POST)) {
             $setting_type=$_POST['setting_type'];
             if($setting_type=="sms_settings"){
                 $selected_app = $this->app_model->get_app($app_id);
@@ -2236,7 +2233,7 @@ class App extends CI_Controller {
                 } else {
                     $action = "update";
                 }
-                if(!isset($_POST['filters'])){
+                if (!isset($_POST['filters'])) {
                     $_POST['filters']=array();
                 }
                 $json_string = json_encode($_POST);
@@ -2250,12 +2247,12 @@ class App extends CI_Controller {
                     $this->db->where('setting_type', $setting_type);
                 }
 //                Send message
-                foreach($users as $val){
+                foreach ($users as $val) {
                     $result=explode("_",$val);
                     $mobile_number=$result[0];
                     $name=$result[1];
                     $message_to_send="Dear $name ,\r \n Application : $application_name\r \n$message\r \n From: ".PLATFORM_NAME." Support Team";
-                    if($mobile_number!=''){
+                    if ($mobile_number!='') {
                         //send message
                         send_sms($mobile_number,$message_to_send);
                     }
@@ -2265,7 +2262,7 @@ class App extends CI_Controller {
                     echo "success";
                 }
 
-            }elseif($setting_type=="form_settings"){
+            } elseif ($setting_type=="form_settings") {
                 $form_id=$_POST['form_id'];
                 $post_url=$_POST['post_url'];
                 $row_key=$_POST['row_key'];
@@ -2281,17 +2278,17 @@ class App extends CI_Controller {
                 $this->db->where('id', $form_id);
                 $this->db->update('form', $form_values);
                 echo "success";
-            }elseif($setting_type=="form_column_settings"){
+            } elseif ($setting_type=="form_column_settings") {
 //                echo "<pre>";
 //                print_r($_POST);die;
                 $app_id=$_POST['app_id'];
                 $form_id=$_POST['form_id'];
                 $form_column_settings_exist = $this->app_model->get_form_column_settings($app_id);
-                if(!empty($form_column_settings_exist)) {
+                if (!empty($form_column_settings_exist)) {
                     $form_column_settings_exist_db = (array)json_decode($form_column_settings_exist['columns'],true);
                     if (array_key_exists($form_id, $form_column_settings_exist_db)) {
                         unset($form_column_settings_exist[$form_id]);
-                    }else{
+                    } else {
 //                        $form_column_settings_exist=json_decode($form_column_settings_exist['columns'], true);
                     }
                 }
@@ -2300,7 +2297,7 @@ class App extends CI_Controller {
 //                print_r(json_decode($columns,true));die;
                 if (empty($form_column_settings_exist)) {
                     $action = "insert";
-                }else{
+                } else {
                     $action = "update";
                 }
 
@@ -2326,7 +2323,7 @@ class App extends CI_Controller {
                     echo "success";
                 }
 
-            }else{
+            } else {
                 $form_id=(isset($_POST['form'])) ? $_POST['form']:'';
                 $filters=(isset($_POST['filters'])) ? $_POST['filters']:'';
                 unset($_POST['filters']);
@@ -2344,7 +2341,7 @@ class App extends CI_Controller {
                     $exist_form_filters=$exist_filters['filters'];
                         if (array_key_exists($form_id,$exist_form_filters)) {
                             $exist_form_filters[$form_id] = $filters;
-                        }else{
+                        } else {
                             $exist_form_filters[$form_id] = $filters;
                         }
 
@@ -2366,20 +2363,20 @@ class App extends CI_Controller {
                     echo "success";
                 }
             }
-        }else {
+        } else {
 
             //get froms of this app...
             $all_forms=$this->form_model->get_form_by_app($app_id);
             //first form...
-            foreach($all_forms as $key=>$val){
+            foreach ($all_forms as $key=>$val) {
                 $form_id=$val['form_id'];
                 $fields=$this->form_results_model->getTableHeadingsFromSchema("zform_".$form_id);
                 $exclude_array = array('id', 'form_id', 'is_deleted', 'location_source', 'created_datetime');
                 $filterd_fileds=array();
                 $required_fields=array();
                 $table_name="zform_$form_id";
-                foreach($fields as $key1=>$list){
-                    if(!in_array($list['Field'],$exclude_array)){
+                foreach ($fields as $key1=>$list) {
+                    if (!in_array($list['Field'],$exclude_array)) {
                         $column=$list['Field'];
                         //get values of this field...
 //                        $column_result=$this->db->query("SELECT $column from  $table_name")->result_array();
@@ -2391,8 +2388,8 @@ class App extends CI_Controller {
 
                 $table_result = $this->form_results_model->getTableHeadingsFromSchema($table_name);
                 $schema_columns=array();
-                foreach($table_result as $key=>$val){
-                    if(!in_array($val['COLUMN_NAME'],$exclude_array)) {
+                foreach ($table_result as $key=>$val) {
+                    if (!in_array($val['COLUMN_NAME'],$exclude_array)) {
                         $schema_columns[$val['COLUMN_NAME']] = $val['COLUMN_NAME'];
                     }
                 }
@@ -2403,7 +2400,7 @@ class App extends CI_Controller {
             //get column settings for this app...
             $column_settings=$this->form_model->get_column_settings($app_id);
 
-            if(!empty($column_settings)){
+            if (!empty($column_settings)){
                 $column_settings=json_decode($column_settings['columns'],true);
             }
 //            echo "<pre>";
@@ -2446,12 +2443,12 @@ class App extends CI_Controller {
                 $data['schema_list'] = $schema_list;
                 $data['all_forms_columns'] = $all_forms_columns;
                 $data['column_settings'] = $column_settings;
-                if($iframe!=''){
+                if ($iframe!='') {
                     $data['selected_tab']=$iframe;
                 }
 //                echo "<pre>";
 //                print_r($_REQUEST);die;
-                if($iframe=='') {
+                if ($iframe=='') {
                     $this->load->view('templates/header', $data);
                 }
                 $this->load->view('app/new_app_settings', $data);
@@ -2490,20 +2487,20 @@ class App extends CI_Controller {
         $graph_view_settings_filter='';
         $sms_settings_filter='';
         $all_forms_columns=array();
-        foreach($app_forms as $key=>$val){
+        foreach ($app_forms as $key=>$val) {
 //            get table columns name...
             $possible_filter_selected=$val['possible_filters'];
             $default_filter_selected=$val['filter'];
             $table_columns=$this->form_results_model->getTableHeadingsFromSchema("zform_".$val['id']);
             $all_columns=array();
-            foreach($table_columns as $columns){
+            foreach ($table_columns as $columns) {
                 $all_columns[]=$columns["Field"];
             }
             $all_forms_columns[$val['id']]=$all_columns;
 
             $exclude_array = array('id', 'form_id','location_source','activity_datetime','created_datetime');
             $possible_filters_array=array_diff($all_columns,$exclude_array);
-            if($i==1) {
+            if ($i==1) {
                 $first_form_columns = $possible_filters_array;
             }
             $possible_and_defaults[$val['id']]['possible_filter_selected']=$possible_filter_selected;
@@ -2513,34 +2510,34 @@ class App extends CI_Controller {
             $i++;
         }
 
-        if(!empty($settings_exist)){
+        if (!empty($settings_exist)) {
             $settings_exist_new=array();
             foreach($settings_exist as $key=>$val){
                 $settings_exist_new[$val['setting_type']]=$val;
             }
 
             $result1=array_key_exists("GENERAL_SETTINGS",$settings_exist_new);
-            if($result1!=''){
+            if ($result1!='') {
                 $general_settings_filter=$settings_exist_new['GENERAL_SETTINGS']['filters'];
             }
             $result2=array_key_exists("FORM_SETTINGS",$settings_exist_new);
-            if($result2!=''){
+            if ($result2!='') {
                 $form_settings_filter=$settings_exist_new['FORM_SETTINGS']['filters'];
             }
             $result3=array_key_exists("RESULT_VIEW_SETTINGS",$settings_exist_new);
-            if($result3!=''){
+            if ($result3!='') {
                 $result_view_settings_filter=$settings_exist_new['RESULT_VIEW_SETTINGS']['filters'];
             }
             $result4=array_key_exists("MAP_VIEW_SETTINGS",$settings_exist_new);
-            if($result4!=''){
+            if ($result4!='') {
                 $map_view_settings_filter=$settings_exist_new['MAP_VIEW_SETTINGS']['filters'];
             }
             $result5=array_key_exists("GRAPH_VIEW_SETTINGS",$settings_exist_new);
-            if($result5!=''){
+            if ($result5!='') {
                 $graph_view_settings_filter=$settings_exist_new['GRAPH_VIEW_SETTINGS']['filters'];
             }
             $result6=array_key_exists("SMS_SETTINGS",$settings_exist_new);
-            if($result6!=''){
+            if ($result6!='') {
                 $sms_settings_filter=$settings_exist_new['SMS_SETTINGS']['filters'];
             }
 
@@ -2554,15 +2551,15 @@ class App extends CI_Controller {
             //get froms of this app...
             $all_forms=$this->form_model->get_form_by_app($app_id);
             //first form...
-            foreach($all_forms as $key=>$val){
+            foreach ($all_forms as $key=>$val) {
                 $form_id=$val['form_id'];
                 $fields=$this->form_results_model->getTableHeadingsFromSchema("zform_".$form_id);
                 $exclude_array = array('id', 'form_id', 'is_deleted', 'location_source', 'created_datetime');
                 $filterd_fileds=array();
                 $required_fields=array();
                 $table_name="zform_$form_id";
-                foreach($fields as $key1=>$list){
-                    if(!in_array($list['Field'],$exclude_array)){
+                foreach ($fields as $key1=>$list) {
+                    if (!in_array($list['Field'],$exclude_array)) {
                         $column=$list['Field'];
                         //get values of this field...
                         $col_result_arr=array();
@@ -2573,8 +2570,8 @@ class App extends CI_Controller {
 
                 $table_result = $this->form_results_model->getTableHeadingsFromSchema($table_name);
                 $schema_columns=array();
-                foreach($table_result as $key=>$val){
-                    if(!in_array($val['COLUMN_NAME'],$exclude_array)) {
+                foreach ($table_result as $key=>$val) {
+                    if (!in_array($val['COLUMN_NAME'],$exclude_array)) {
                         $schema_columns[$val['COLUMN_NAME']] = $val['COLUMN_NAME'];
                     }
                 }
@@ -2585,7 +2582,7 @@ class App extends CI_Controller {
             //get column settings for this app...
             $column_settings=$this->form_model->get_column_settings($app_id);
 
-            if(!empty($column_settings)){
+            if (!empty($column_settings)) {
                 $column_settings=json_decode($column_settings['columns'],true);
             }
             $this->load->library('form_validation');
@@ -2637,13 +2634,13 @@ class App extends CI_Controller {
         $result=$this->db->query("select distinct $column from $table_name where $column LIKE '%$value%'")->result_array();
         $i=0;
         $options=array();
-        foreach($result as $key=>$val){
+        foreach ($result as $key=>$val) {
             $field_value = str_replace(" ", "_", $val[$column]);
             $options[$i]['value']=$field_value;
             $options[$i]['label']=$val[$column];
             $i++;
         }
-        if(empty($options)){
+        if (empty($options)) {
             $options[0]['value']="";
             $options[0]['label']="No Result Found";
 
@@ -2665,9 +2662,9 @@ class App extends CI_Controller {
     }
 
     public function get_name_pin(){
-        if($_POST['value']==""){
+        if ($_POST['value']=="") {
 
-        }else {
+        } else {
             $value = str_replace("_", " ", $_POST['value']);
             $column = $_POST['column'];
             $form_id = $_POST['form_id'];
@@ -2711,7 +2708,7 @@ class App extends CI_Controller {
 
     public function get_saved_pins($form_id){
         $result=$this->db->query("select pins from map_pin_settings where form_id='$form_id'")->result_array();
-        if(!empty($result)) {
+        if (!empty($result)) {
             return json_decode($result[0]['pins'], true);
         }
     }
@@ -2719,13 +2716,13 @@ class App extends CI_Controller {
     public function get_saved_pins_html(){
         $form_id=$_POST['form_id'];
         $result=$this->db->query("select pins from map_pin_settings where form_id='$form_id'")->result_array();
-        if(!empty($result)) {
+        if (!empty($result)) {
             $pins_data=json_decode($result[0]['pins'], true);
             $table="<div class='row'><table>";
-            foreach($pins_data as $key=>$val){
+            foreach ($pins_data as $key=>$val) {
                 $key_new=strtoupper(str_replace("_"," ",$key));
                 $table.="<tr><th colspan='2'>$key_new</th></tr>";
-                foreach($val as $field=>$img){
+                foreach ($val as $field=>$img) {
                     $field=str_replace("_"," ",$field);
                     $image_url=base_url()."assets/images/map_pins/$img";
                     $table.="
@@ -2745,7 +2742,7 @@ class App extends CI_Controller {
     }
 
     public function save_pin_settings(){
-        if(!empty($_POST)) {
+        if (!empty($_POST)) {
             $field_name = $_POST['column'];
             $form_id = $_POST['form_id'];
             $field_value = $_POST['field_value'];
