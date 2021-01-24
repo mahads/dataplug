@@ -92,23 +92,23 @@ class Cron extends CI_Controller {
       
         $query_result = $this->db->query($query);
         $results = $query_result->result_array();
-        if(count($results)>0){
-            if($range_row){
+        if (count($results)>0) {
+            if ($range_row) {
                 $last_rec_index = $results[count($results) - 1];
                 $this->db->where('id', $range_row->id);
                 $this->db->update('cron', array('log_id'=>$last_rec_index['id'] , 'run_datetime' => $run_datetime));
             }
 
-        }else{
+        } else {
 
 
             $min_log = mysql_query( "SELECT min(id) as minid FROM mobile_activity_log where error IS NULL");
             $min_log_row = mysql_fetch_object($min_log);
             $last_row_id = 0;
-            if($min_log_row){
+            if ($min_log_row) {
                 $last_row_id = $min_log_row->minid;
                 //$run_datetime = date('Y-m-d H:i:s');
-                if($range_row){
+                if ($range_row) {
                     $this->db->where('id', $range_row->id);
                     $this->db->update('cron', array('log_id'=>$last_row_id , 'run_datetime' => $run_datetime));
                 }
@@ -125,7 +125,7 @@ class Cron extends CI_Controller {
 
 
         $query_result->free_result();
-        if(count($results) > 0){
+        if (count($results) > 0) {
 
             foreach ($results as $r_key => $r_value) {
                 $form_data = json_decode($r_value ['form_data']);
@@ -171,18 +171,18 @@ class Cron extends CI_Controller {
                             }
                             $record[$key] = 'SHOW RECORDS';
                         }
-                    } else if ($cap_first [0] == 'caption') {
+                    } elseif ($cap_first [0] == 'caption') {
                         $captions_images[$key] = $v;
-                    } else if ($key == 'caption_sequence') {
+                    } elseif ($key == 'caption_sequence') {
                         $caption_sequence = urldecode($v);
                     } elseif ($key == 'form_id' || $key == 'row_key' || $key == 'security_key' || $key == "dateTime" || $key == "landing_page" || $key == "is_take_picture" || $key == 'form_icon_name') {
                         
                     } else {
 
-                        if(empty($form_info['security_key'])){
+                        if (empty($form_info['security_key'])) {
                             $vdcode = urldecode(base64_decode($v));
                         }
-                        else if(strpos($v, $form_info['security_key']) !== FALSE){
+                        elseif (strpos($v, $form_info['security_key']) !== FALSE) {
                             $vdcode = urldecode(base64_decode(str_replace($form_info['security_key'], '', $v)));
                         }
                         else {
@@ -200,23 +200,24 @@ class Cron extends CI_Controller {
 
                 $warning_message = '';
                 $app_map_view_setting = get_map_view_settings($app_id);
-                if(isset($app_map_view_setting->map_distance_mapping) && $app_map_view_setting->map_distance_mapping)//if Distance maping on then call this block
-                {
+                if (isset($app_map_view_setting->map_distance_mapping) && $app_map_view_setting->map_distance_mapping) { //if Distance maping on then call this block
+                
                     $saved_distance=500;
-                    if($app_map_view_setting->distance !== ''){//if distance not given then default distance will assign as 500
+                    if ($app_map_view_setting->distance !== '') {//if distance not given then default distance will assign as 500
                         $saved_distance=$app_map_view_setting->distance;
                     }
                     $matching_value = $record[$app_map_view_setting->matching_field]; //this field name getting from setting and getting value from received json
-                    $kml_poligon_rec = $this->db->get_where('kml_poligon', array('app_id' => $app_id, 'type' => 'distence','matching_value' => $matching_value))->row_array();
+                    $kml_poligon_rec = $this->db->get_where('kml_poligon', array(
+                        'app_id' => $app_id, 
+                        'type' => 'distence',
+                        'matching_value' => $matching_value))->row_array();
                     
-                    if(!empty($kml_poligon_rec)){
+                    if (!empty($kml_poligon_rec)) {
                         $lat_long = explode(',', $location);//Received location from mobile device
                         $distance_from_center = lan_lng_distance($kml_poligon_rec['latitude'], $kml_poligon_rec['longitude'],$lat_long[0], $lat_long[1]);
-                        if($distance_from_center > $saved_distance)
-                        {
+                        if ($distance_from_center > $saved_distance) {
                             $warning_message  = 'Your location mismatched. ';
-                        }
-                        else{
+                        } else {
                             $warning_message  = 'You are on right location' ;
                         }
                     }
@@ -232,21 +233,21 @@ class Cron extends CI_Controller {
                     $uc = getUcName($location); // Get UC name against location
                     if ($uc) {
                         $uc_name = strip_tags($uc);
-                    }else{
+                    } else {
                         $err_msg.="UC api return null, ";
                     }
 
                     $town = getTownName($location); // Get Town name against location
                     if ($town) {
                         $town_name = strip_tags($town);
-                    }else{
+                    } else {
                         $err_msg.="TOWN api return null, ";
                     }
 
                     $district = getDistrictName($location); // Get Town name against location
                     if ($district) {
                         $district_name = strip_tags($district);
-                    }else{
+                    } else {
                         $err_msg.="District api return null, ";
                     }
                 }
@@ -269,8 +270,7 @@ class Cron extends CI_Controller {
 
                 //this is for evaccs partition
                 if (strpos($_SERVER ['SERVER_NAME'], 'monitoring.punjab.gov') !== false) {
-                    if($form_id == 21 || $form_id == 20)
-                    {
+                    if ($form_id == 21 || $form_id == 20) {
                         $dataresultnew['created_datetime_partition']=$created_datetime;
 
                     }
@@ -291,11 +291,10 @@ class Cron extends CI_Controller {
                         if (!(in_array(strtolower($element), $fields_list))) {
                             $fields_count = $this->db->list_fields('zform_' . $form_id);
                             $fields_count = array_map('strtolower', $fields_count);
-                            if(count($fields_count) < 90){
+                            if (count($fields_count) < 90) {
                                 $field = array($element => array('type' => 'VARCHAR', 'constraint' => 200, 'NULL' => TRUE));
                                 $this->dbforge->add_column('zform_' . $form_id, $field, $after_field);
-                            }else
-                            {
+                            } else {
                                 $field = array($element => array('type' => 'TEXT', 'NULL' => TRUE));
                                 $this->dbforge->add_column('zform_' . $form_id, $field, $after_field);
                             }
@@ -309,10 +308,10 @@ class Cron extends CI_Controller {
                 //print_r($dataresultnew1);
                 foreach ($dataresultnew1 as $key => $value) {
                     $key = strtolower($key);
-                    if(array_key_exists($key, $final_array)){
+                    if (array_key_exists($key, $final_array)) {
                         $final_array[$key] = $final_array[$key].','.$value;
 
-                    }else{
+                    } else {
                         $final_array[$key] = $value;
 
                     }
@@ -321,11 +320,11 @@ class Cron extends CI_Controller {
                 // print_r($final_array);
                 // print "</pre>";
                 //exit;
-                try{
+                try { 
                     //echo $r_value['id'];
                     $ret_ins = $this->db->insert( 'zform_'.$form_id, $final_array );
                     
-                    if(!$ret_ins){
+                    if (!$ret_ins) {
                         $err_msg .= $this->db->_error_message();
                         $pos = strpos($err_msg, 'Duplicate Entry');
                         if ($pos !== false) {
@@ -334,14 +333,13 @@ class Cron extends CI_Controller {
                         }
                         $this->form_results_model->update_mobile_activity($r_value['id'],array('error'=>$err_msg)); 
                         continue;
-                    }
-                    else{
+                    } else {
                         $form_result_id_new = $this->db->insert_id();
                         echo $r_value['id'].' => Form Id = '.$form_id.'---App Id='.$app_id.' was Inserted Successfully and cleared cache <br />';
                         $this->form_results_model->remove_mobile_activity($r_value['id']);
                     }
                     
-                }catch (Exception $e) {
+                } catch (Exception $e) {
 
 
                     //$err_msg .= $this->db->_error_message();
@@ -356,7 +354,7 @@ class Cron extends CI_Controller {
                         
                 }
 
-                if(!empty($sub_table_record)) {
+                if (!empty($sub_table_record)) {
                     foreach ($sub_table_record as $sb_key => $sb_value) {
                         $subtable_name = 'zform_' . $form_id . '_' . $sb_key;
                         foreach ($sb_value as $sub_array) {
@@ -399,7 +397,7 @@ class Cron extends CI_Controller {
                 $post_url = '';
                 if (!empty($form_info ['post_url'])) {
                     $post_url = $form_info ['post_url'];
-                } else if (!empty($form_info ['fv_post_url'])) {
+                } elseif (!empty($form_info ['fv_post_url'])) {
                     $post_url = $form_info ['fv_post_url'];
                 }
 
@@ -453,7 +451,7 @@ class Cron extends CI_Controller {
         $this->db->from('zform_images');
         if (strpos($_SERVER ['SERVER_NAME'], 'monitoring.punjab.gov') !== false) {
             $this->db->like('image', 'monitoring.punjab.gov.pk/assets');
-        }else{
+        } else {
             $this->db->like('image', 'dataplug.itu.edu.pk/assets');
             //$this->db->like('image', 'godk.itu.edu.pk/assets');
         }
@@ -465,7 +463,7 @@ class Cron extends CI_Controller {
         $image_array_post = array();
         $count_succ = 0;
         $count_fail = 0;
-        if(!empty($img_available1)){
+        if (!empty($img_available1)) {
             foreach ($img_available1 as $image_data) {
                 $image_id = $image_data['id'];
                 $form_id = $image_data['form_id'];
@@ -475,7 +473,7 @@ class Cron extends CI_Controller {
                 $app_result = $app_query->row_array();
                 $app_id = $app_result['app_id'];
 
-                if($app_result['is_deleted'] == 0){
+                if ($app_result['is_deleted'] == 0) {
                     $url = $image_data['image'];
 
                     $url_explode = explode("/", $url);
@@ -483,12 +481,12 @@ class Cron extends CI_Controller {
                     $image_name = $url_explode[$image_index];
                     if (strpos($_SERVER ['SERVER_NAME'], 'monitoring.punjab.gov') !== false) {
                         $source_path = "/var/www/vhosts/monitoring.punjab.gov.pk/htdoc/assets/images/data/form-data/".$image_name;
-                    }else{
+                    } else {
                         $source_path = "/var/www/vhosts/dataplug.itu.edu.pk/htdoc/assets/images/data/form-data/".$image_name;
                         //$source_path = "/var/www/vhosts/godk.itu.edu.pk/htdoc/assets/images/data/form-data/".$image_name;
                     }
                     $dest_path = NFS_IMAGE_PATH."/app_id_$app_id/".$image_name;
-                    if(file_exists($source_path)){
+                    if (file_exists($source_path)) {
                         $count_succ++;
                         @mkdir(NFS_IMAGE_PATH.'/app_id_'.$app_id);
                         copy($source_path, $dest_path);
@@ -496,11 +494,10 @@ class Cron extends CI_Controller {
                         $this->db->where('id',$image_id);
                         $this->db->update('zform_images',array('image'=>$dest_path));
                         unlink($source_path);
-                    }else{
-                        if(file_exists($dest_path)){
+                    } else {
+                        if (file_exists($dest_path)) {
 
-                        }
-                        else{
+                        } else {
                             $this->db->delete('zform_images',array('id'=>$image_id));
                             $count_fail++;
                         }
@@ -532,7 +529,7 @@ class Cron extends CI_Controller {
         
             $this->db->like('image', 'ppmrp-live.s3.amazonaws.com');
             $this->db->limit(300000,100000);
-        }else{
+        } else {
             $this->db->like('image', 'dataplug-live.s3.amazonaws.com');
             $this->db->limit(100000);
         }
@@ -543,7 +540,7 @@ class Cron extends CI_Controller {
         $image_array_post = array();
         $count_succ = 0;
         $count_fail = 0;
-        if(!empty($img_available1)){
+        if (!empty($img_available1)) {
             foreach ($img_available1 as $image_data) {
                 $image_id = $image_data['id'];
                 $form_id = $image_data['form_id'];
@@ -553,7 +550,7 @@ class Cron extends CI_Controller {
                 $app_result = $app_query->row_array();
                 $app_id = $app_result['app_id'];
 
-                if($app_result['is_deleted'] == 0){
+                if ($app_result['is_deleted'] == 0) {
                     $url = $image_data['image'];
 
                     $url_explode = explode("/", $url);
@@ -562,11 +559,11 @@ class Cron extends CI_Controller {
                     //$source_path = "/var/www/vhosts/monitoring.punjab.gov.pk/htdoc/assets/images/data/form-data/".$image_name;
                     if (strpos($_SERVER ['SERVER_NAME'], 'monitoring.punjab.gov') !== false) {
                         $source_path = "/NFS-PPMRP/s3/ppmrp-live/".$image_name;
-                    }else{
+                    } else {
                         $source_path = "/NFS-Dataplug/s3/dataplug-live/".$image_name;
                     }
                     $dest_path = NFS_IMAGE_PATH."/app_id_$app_id/".$image_name;
-                    if(file_exists($source_path)){
+                    if (file_exists($source_path)) {
                         $count_succ++;
                         @mkdir(NFS_IMAGE_PATH.'/app_id_'.$app_id);
                         copy($source_path, $dest_path);
@@ -576,11 +573,10 @@ class Cron extends CI_Controller {
 
                         //unlink($source_path);
                         //echo "File deleted because Successfully copied = ".$source_path." ==>".$dest_path;
-                    }else{
-                        if(file_exists($dest_path)){
+                    } else {
+                        if (file_exists($dest_path)) {
 
-                        }
-                        else{
+                        } else {
                             //$this->db->delete('zform_images',array('id'=>$image_id));
                             //echo "Image table record deleted because file not exist = ".$source_path;
                             $count_fail++;

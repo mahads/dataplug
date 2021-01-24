@@ -202,13 +202,11 @@ class Complaint extends CI_Controller {
                         $complaint_array['duplicate_sim_reason']=$this->input->post('duplicate_sim_reason');
                         $resolution_time = "1 Working Day";
                         //$send_email = true;
-                    }
-                    elseif ($complaint=='SIM blocked') {
+                    } elseif ($complaint=='SIM blocked') {
                         $description = "Sim has been blocked";
                         $resolution_time = "30 Minutes";
                         //$send_email = true;
-                    }
-                    elseif ($complaint=='Internet & Balance Issue') {
+                    } elseif ($complaint=='Internet & Balance Issue') {
                         $description = "Internet and balance issue from ".$this->input->post('internet_issue_from_date');
                         $description .= ' to'.$this->input->post('internet_issue_to_date');
 
@@ -217,8 +215,7 @@ class Complaint extends CI_Controller {
                         $resolution_time = "4 Hours";
                         //$send_email = true;
 
-                    }
-                    elseif ($complaint=='Signal Problem') {
+                    }  elseif ($complaint=='Signal Problem') {
                         $description = "Signal problem in following area. <br> District : ".$this->input->post('signal_problem_district');
                         $description .= "<br>Tehsil : ".$this->input->post('signal_problem_tehsil');
                         $description .= "<br>Markaz : ".$this->input->post('signal_problem_markaz');
@@ -233,8 +230,7 @@ class Complaint extends CI_Controller {
                         $resolution_time = "1 Working Day";
                         //$send_email = true;
 
-                    }
-                    elseif ($complaint=='Balance Deduction') { 
+                    } elseif ($complaint=='Balance Deduction') { 
                         $description = "Balance received on ".$this->input->post('balance_received_date');
                         $description .= "<br> Balance deduction on ".$this->input->post('balance_deduction_date');
 
@@ -242,15 +238,13 @@ class Complaint extends CI_Controller {
                         $complaint_array['balance_deduction_date']=$this->input->post('balance_deduction_date');
                         $resolution_time = "4 Hours";
                         //$send_email = true;
-                    }
-                    elseif ($complaint=='Sim Mapping/Activation') {
+                    } elseif ($complaint=='Sim Mapping/Activation') {
                         $description = $this->input->post('sim_mapping_activation_comments')."<br />ICCID will add in change status page after resolve the issue";
                         $complaint_array['sim_mapping_activation_comments']=$this->input->post('sim_mapping_activation_comments');
                         $resolution_time = "2 Hours";
                         //$send_email = true;
 
-                    }
-                    elseif ($complaint=='Ownership Change') {
+                    } elseif ($complaint=='Ownership Change') {
                         $description = "New User Name : ".$this->input->post('ownership_user_name');
                         $description .= "<br> New User CNIC : ".$this->input->post('ownership_cnic');
                         $description .= "<br> User Designation : ".$this->input->post('ownership_designation');
@@ -262,18 +256,15 @@ class Complaint extends CI_Controller {
                         $complaint_array['ownership_place']=$this->input->post('ownership_place');
                         $resolution_time = "2 Hours";
                         
-                    }
-                    elseif ($complaint=='User Status Change') {
+                    } elseif ($complaint=='User Status Change') {
                         $description = "User status change as : ".$this->input->post('user_status_change');
                         $complaint_array['user_status_change']=$this->input->post('user_status_change');
                         $resolution_time = "2 Hours";
-                    }
-                    elseif ($complaint=='IMEI Update') {
+                    } elseif ($complaint=='IMEI Update') {
                         $description = "Change IMEI# as : ".$this->input->post('imei_update');
                         $complaint_array['imei_update']=$this->input->post('imei_update');
                         $resolution_time = "2 Hours";
-                    }
-                    elseif ($complaint=='Mark Leave') {
+                    } elseif ($complaint=='Mark Leave') {
                         $description = "Leave Type : ".$this->input->post('leave_type');
                         $description .= "<br>Leave From : ".$this->input->post('leave_from_date');
                         $description .= " to ".$this->input->post('leave_to_date');
@@ -298,8 +289,7 @@ class Complaint extends CI_Controller {
                             }
                         }
 
-                    }
-                    elseif ($complaint=='Login Credentials Issues') {
+                    } elseif ($complaint=='Login Credentials Issues') {
                         $description = "User Name : ".$this->input->post('login_user_name');
                         $description .= "<br>Old Password : ".$this->input->post('login_old_password');
                         $description .= "<br>New Password : ".$this->input->post('login_new_password');
@@ -309,8 +299,7 @@ class Complaint extends CI_Controller {
                         $complaint_array['login_new_password']=$this->input->post('login_new_password');
                         $complaint_array['login_issue_reason']=$this->input->post('login_issue_reason');
                         $resolution_time = "1 Working Day";
-                    }
-                    elseif ($complaint=='User Transferred') {
+                    } elseif ($complaint=='User Transferred') {
                         $description = "Transfered to following area :<br>District : ".$this->input->post('transfered_district');
                         $description .= "<br>Tehsil : ".$this->input->post('transfered_tehsil');
                         $description .= "<br>Markaz : ".$this->input->post('transfered_markaz');
