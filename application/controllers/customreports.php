@@ -102,7 +102,7 @@ class Customreports extends CI_Controller {
                     $from_date = '';
                     $data['from_date'] = '';
                     $data['to_date'] = '';
-                    if(isset($_REQUEST['from_date'])){
+                    if (isset($_REQUEST['from_date'])) {
                         $to_date = $_REQUEST['to_date'];
                         $from_date = $_REQUEST['from_date'];
                         $data['from_date'] = $from_date;
@@ -112,7 +112,7 @@ class Customreports extends CI_Controller {
                     $final_district_wise_array2 = array();
 
                     $filter_result = get_graph_view_settings($selected_form['app_id']);
-                        if($new_category==""){
+                        if ($new_category=="") {
                             $new_category="district_name";
                         }
                         foreach ($new_category_list as $cat_listv) {
@@ -193,7 +193,7 @@ class Customreports extends CI_Controller {
                     $this->load->view('templates/header', $data);
                     $this->load->view('graph/custom_reports', $data);
                     $this->load->view('templates/footer', $data);
-                }else {
+                } else {
                     redirect(base_url());
                 }
     }
@@ -256,7 +256,7 @@ class Customreports extends CI_Controller {
 //            print "<pre>";
 //            print_r($new_category_list);
 //            exit;
-            if($new_category==""){
+            if ($new_category=="") {
                  $new_category="district_name";
             }
             $data['category_list'] = $new_category_list;
@@ -1045,7 +1045,7 @@ class Customreports extends CI_Controller {
             $data['graph_text'] = 'Data Records By Users';
             $data['graph_type'] = $graph_type;
             $this->load->view('graph/dashboard_partial', $data);
-        } else if ($graph_type == 'category') {
+        } elseif ($graph_type == 'category') {
             $data_array = $this->get_category_list($slug);
             $category_list = $data_array['category_list'];
             $filter_attribute = $data_array['filter_attribute'];
